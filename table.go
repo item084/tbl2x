@@ -15,6 +15,7 @@ import (
 type Table struct {
 	ColNames []string
 	RowNames []string
+	//RowLabels [][]string
 	ColSize  int
 	RowSize  int
 	Mat      []float64
