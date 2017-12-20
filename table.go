@@ -14,19 +14,22 @@ import (
 )
 
 type Table struct {
-	ColNames []string
-	RowNames []string
-	//RowLabels [][]string
-	ColSize  int
-	RowSize  int
-	Mat      []float64
-	FileName string
-	Name     string
+	ColNames      []string
+	ColLabelNames []string
+	ColLabelData  []string
+	RowNames      []string
+	ColSize       int
+	RowSize       int
+	Mat           []float64
+	FileName      string
+	Name          string
 }
 
 func NewTable(r int, c int, data []float64) *Table {
 	colNames := make([]string, r)
 	rowNames := make([]string, c)
+	colLabelName := make([]string, 0)
+	colLabels := make([]string, 0)
 	for i := range colNames {
 		colNames[i] = "C" + strconv.Itoa(i)
 	}
@@ -41,7 +44,7 @@ func NewTable(r int, c int, data []float64) *Table {
 	}
 	fileName := "noname.tsv"
 	name := "table"
-	return &Table{colNames, rowNames, r, c, data, fileName, name}
+	return &Table{colNames, colLabelName, colLabels, rowNames, r, c, data, fileName, name}
 
 }
 func (t *Table) Dims() (int, int) {
@@ -56,6 +59,15 @@ func (t *Table) Rows() []string {
 func (t *Table) Dense() *mat.Dense {
 	return mat.NewDense(t.RowSize, t.ColSize, t.Mat)
 }
+func (t *Table) ColLabelNum() int {
+	return len(t.ColLabelData) / t.RowSize
+}
+
+/*
+func (t *Table) ColLabel(i int) []string { //TODO
+
+}
+*/
 func (t *Table) String() string {
 	return t.PrettyString(-1)
 }
@@ -63,6 +75,7 @@ func (t *Table) TxtEncode() string {
 	return t.PrettyString(2)
 }
 
+/* TODO handle colLabels?? */
 func (t *Table) T() error {
 	m := t.Dense().RawMatrix().Data
 	t.ColNames, t.RowNames = t.RowNames, t.ColNames
@@ -123,7 +136,7 @@ func (t *Table) Log(e float64, pseudo float64) error {
 	return nil
 }
 
-func (table *Table) loadReader(f io.Reader, fn string) error {
+func (table *Table) loadReader(f io.Reader, fn string, n int) error {
 	r := csv.NewReader(f)
 	r.Comma = '\t'
 	table.FileName = fn
@@ -132,30 +145,35 @@ func (table *Table) loadReader(f io.Reader, fn string) error {
 		return err
 	}
 	table.Name = iter[0][0]
-	table.ColNames = iter[0][1:]
+	table.ColNames = iter[0][(n + 1):]
+	table.ColLabelNames = iter[0][1:(n + 1)]
 	table.ColSize = len(table.ColNames)
 	table.RowSize = len(iter) - 1
 	table.RowNames = make([]string, table.RowSize)
 	table.Mat = make([]float64, table.ColSize*table.RowSize)
 	for i := 1; i < len(iter); i++ {
-		name, values := iter[i][0], iter[i][1:]
+		name, values := iter[i][0], iter[i][(n+1):]
 		for j := 0; j < len(values); j++ {
 			table.Mat[(i-1)*table.ColSize+j], err = strconv.ParseFloat(values[j], 64)
 			if err != nil {
 				return err
 			}
 		}
+		colLabelValues := iter[i][1:(n + 1)]
+		for j := 0; j < len(colLabelValues); j++ {
+			table.ColLabelData[(i-1)*table.ColSize+j] = colLabelValues[j]
+		}
 		table.RowNames[i-1] = name
 	}
 	return err
 }
-func (table *Table) LoadTsv(file string) error {
+func (table *Table) LoadTsv(file string, n int) error {
 	f, err := netio.Open(file)
 	defer f.Close()
 	if err != nil {
 		return err
 	}
-	err = table.loadReader(f, file)
+	err = table.loadReader(f, file, n)
 	//table := new(Table)
 	return err
 }
