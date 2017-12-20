@@ -3,10 +3,13 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
 
 	"github.com/gorilla/mux"
 	"github.com/nimezhu/data"
+	"github.com/nimezhu/tbl2x"
 )
 
 func main() {
@@ -24,8 +27,13 @@ func main() {
 			for k0, v0 := range data.(map[string]interface{}) {
 				fmt.Println(k0, v0.(string))
 			}
-			return nil, errors.New("TODO")
+			r := &tbl2x.TableRouter{dbname, make(map[string]*tbl2x.Table)}
+			err := r.Load(data.(map[string]interface{}))
+			return r, err
 		}
 	}
 	l.Load(uri, router)
+	log.Println("Listening...")
+	log.Println("Please open http://127.0.0.1:8080")
+	http.ListenAndServe(":8080", router)
 }

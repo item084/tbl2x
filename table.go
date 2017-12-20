@@ -177,6 +177,11 @@ func (table *Table) LoadTsv(file string, n int) error {
 	//table := new(Table)
 	return err
 }
+func Load(fn string, n int) (*Table, error) {
+	t := &Table{}
+	err := t.LoadTsv(fn, n)
+	return t, err
+}
 
 func (t *Table) PrettyStringChosenRows(rows []int, f int) string {
 	_, c := t.Dims()
