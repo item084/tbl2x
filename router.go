@@ -2,6 +2,11 @@ package tbl2x
 
 import "github.com/gorilla/mux"
 
-func (t *Table) ServeTo(r *mux.Router) {
+type TableRouter struct {
+	id   string
+	data map[string]*Table
+}
+
+func (t *TableRouter) ServeTo(r *mux.Router) {
 
 }
