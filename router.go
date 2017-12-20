@@ -2,6 +2,7 @@ package tbl2x
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
@@ -14,6 +15,14 @@ type TableRouter struct {
 func (t *TableRouter) Load(d map[string]interface{}) error {
 	for k, v := range d {
 		switch v.(type) {
+		case []string:
+			n, _ := strconv.Atoi(v.([]string)[1])
+			tbl, err := Load(v.([]string)[0], n) //TODO 0
+			if err == nil {
+				t.Data[k] = tbl
+			} else {
+				return err
+			}
 		case string:
 			tbl, err := Load(v.(string), 0) //TODO 0
 			if err == nil {

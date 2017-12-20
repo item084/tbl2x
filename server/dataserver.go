@@ -24,9 +24,6 @@ func main() {
 		case string:
 			return nil, errors.New("todo")
 		case map[string]interface{}:
-			for k0, v0 := range data.(map[string]interface{}) {
-				fmt.Println(k0, v0.(string))
-			}
 			r := &tbl2x.TableRouter{dbname, make(map[string]*tbl2x.Table)}
 			err := r.Load(data.(map[string]interface{}))
 			return r, err

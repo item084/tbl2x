@@ -149,6 +149,7 @@ func (table *Table) loadReader(f io.Reader, fn string, n int) error {
 	table.ColLabelNames = iter[0][1:(n + 1)]
 	table.ColSize = len(table.ColNames)
 	table.RowSize = len(iter) - 1
+	table.ColLabelData = make([]string, len(table.ColLabelNames)*table.RowSize)
 	table.RowNames = make([]string, table.RowSize)
 	table.Mat = make([]float64, table.ColSize*table.RowSize)
 	for i := 1; i < len(iter); i++ {
@@ -161,7 +162,7 @@ func (table *Table) loadReader(f io.Reader, fn string, n int) error {
 		}
 		colLabelValues := iter[i][1:(n + 1)]
 		for j := 0; j < len(colLabelValues); j++ {
-			table.ColLabelData[(i-1)*table.ColSize+j] = colLabelValues[j]
+			table.ColLabelData[(i-1)*table.ColLabelNum()+j] = colLabelValues[j]
 		}
 		table.RowNames[i-1] = name
 	}
