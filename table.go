@@ -8,7 +8,8 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/gonum/matrix/mat64"
+	"gonum.org/v1/gonum/mat"
+
 	"github.com/nimezhu/netio"
 )
 
@@ -52,8 +53,8 @@ func (t *Table) Cols() []string {
 func (t *Table) Rows() []string {
 	return t.RowNames
 }
-func (t *Table) Dense() *mat64.Dense {
-	return mat64.NewDense(t.RowSize, t.ColSize, t.Mat)
+func (t *Table) Dense() *mat.Dense {
+	return mat.NewDense(t.RowSize, t.ColSize, t.Mat)
 }
 func (t *Table) String() string {
 	return t.PrettyString(-1)
@@ -103,9 +104,9 @@ func (t *Table) Info() string {
 	}
 	buffer.WriteString(s)
 	buffer.WriteString("\n\n")
-	mat := t.Dense()
-	max := mat64.Max(mat)
-	min := mat64.Min(mat)
+	matv := t.Dense()
+	max := mat.Max(matv)
+	min := mat.Min(matv)
 	buffer.WriteString(fmt.Sprintf("Domain: [%f , %f]", min, max))
 	buffer.WriteString("\n\n")
 	return buffer.String()

@@ -2,12 +2,12 @@ package tbl2x
 
 import (
 	"container/heap"
+
+	"gonum.org/v1/gonum/mat"
 	//"errors"
 	//"log"
 	//	"strconv"
 	"sort"
-
-	"github.com/gonum/matrix/mat64"
 )
 
 type Ele struct {
@@ -33,7 +33,7 @@ func (h *EleArr) Pop() interface{} {
 	return x
 }
 
-func matColToArr(m *mat64.Dense, j int, r int) (*EleArr, error) {
+func matColToArr(m *mat.Dense, j int, r int) (*EleArr, error) {
 	arr := make(EleArr, r)
 	for i := 0; i < r; i++ {
 		arr[i] = Ele{I: i, V: m.At(i, j)}

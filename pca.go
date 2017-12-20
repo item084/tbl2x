@@ -1,13 +1,13 @@
 package tbl2x
 
 import (
-	"github.com/gonum/matrix/mat64"
-	"github.com/gonum/stat"
+	"gonum.org/v1/gonum/mat"
+	"gonum.org/v1/gonum/stat"
 )
 
 type tablePCA struct {
 	vars []float64
-	vecs *mat64.Dense
+	vecs *mat.Dense
 }
 
 func (t *Table) PCA() *tablePCA {
@@ -18,11 +18,11 @@ func (t *Table) PCA() *tablePCA {
 	}
 	var pc stat.PC
 	ok := pc.PrincipalComponents(a, weight)
-	var vecs *mat64.Dense
+	var vecs *mat.Dense
 	var vars []float64
 	if ok {
-		vecs = pc.Vectors(vecs)
-		vars = pc.Vars(vars)
+		vecs = pc.VectorsTo(vecs)
+		vars = pc.VarsTo(vars)
 		return &tablePCA{vars, vecs}
 	} else {
 		return nil
