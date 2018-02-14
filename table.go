@@ -183,16 +183,13 @@ func Load(fn string, n int) (*Table, error) {
 	err := t.LoadTsv(fn, n)
 	return t, err
 }
-
-func (t *Table) PrettyStringChosenRows(rows []int, f int) string {
-	_, c := t.Dims()
+func (t *Table) PrettyStringSubmat(rows []int, cols []int, f int) string {
 	var buffer bytes.Buffer
 	buffer.WriteString(t.Name + "_sub")
-	for i0 := 0; i0 < c; i0++ {
-		s := fmt.Sprintf("\t%s", t.ColNames[i0])
+	for i0 := 0; i0 < len(cols); i0++ {
+		s := fmt.Sprintf("\t%s", t.ColNames[cols[i0]])
 		buffer.WriteString(s)
 	}
-
 	buffer.WriteString("\n")
 	format := "\t" + "%." + strconv.Itoa(f) + "f"
 	if f == -1 {
@@ -201,14 +198,30 @@ func (t *Table) PrettyStringChosenRows(rows []int, f int) string {
 	m := t.Dense()
 	for i := 0; i < len(rows); i++ {
 		buffer.WriteString(fmt.Sprintf("%s", t.RowNames[rows[i]]))
-		for j := 0; j < c; j++ {
-			buffer.WriteString(fmt.Sprintf(format, m.At(rows[i], j)))
+		for j := 0; j < len(cols); j++ {
+			buffer.WriteString(fmt.Sprintf(format, m.At(rows[i], cols[j])))
 		}
 		buffer.WriteString("\n")
 	}
 	return buffer.String()
-
 }
+func (t *Table) PrettyStringChosenRows(rows []int, f int) string {
+	_, c := t.Dims()
+	cols := make([]int, c)
+	for i := 0; i < c; i++ {
+		cols[i] = i
+	}
+	return t.PrettyStringSubmat(rows, cols, f)
+}
+func (t *Table) PrettyStringChosenCols(cols []int, f int) string {
+	r, _ := t.Dims()
+	rows := make([]int, r)
+	for i := 0; i < r; i++ {
+		rows[i] = i
+	}
+	return t.PrettyStringSubmat(rows, cols, f)
+}
+
 func (t *Table) PrettyString(f int) string {
 	r, c := t.Dims()
 	var buffer bytes.Buffer
