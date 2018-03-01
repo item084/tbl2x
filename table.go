@@ -155,9 +155,13 @@ func (table *Table) loadReader(f io.Reader, fn string, n int) error {
 	for i := 1; i < len(iter); i++ {
 		name, values := iter[i][0], iter[i][(n+1):]
 		for j := 0; j < len(values); j++ {
-			table.Mat[(i-1)*table.ColSize+j], err = strconv.ParseFloat(values[j], 64)
-			if err != nil {
-				return err
+			if values[j] == "NA" {
+				table.Mat[(i-1)*table.ColSize+j] = math.NaN()
+			} else {
+				table.Mat[(i-1)*table.ColSize+j], err = strconv.ParseFloat(values[j], 64)
+				if err != nil {
+					return err
+				}
 			}
 		}
 		colLabelValues := iter[i][1:(n + 1)]
