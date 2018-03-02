@@ -173,15 +173,26 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		_cols := params["cols"]
 		cols := strings.Split(_cols, ",")
 		colidxs := make([]int, len(cols))
+		ei := make([]int, 0, len(cols))
 		if ok {
 			for i, colid := range cols {
 				if v, ok := colMap[id][colid]; ok {
 					colidxs[i] = v
+					ei = append(ei, v)
 				} else {
-					colidxs[i], _ = strconv.Atoi(colid)
+					colidxs[i], err = strconv.Atoi(colid)
+					if err != nil {
+						colidxs[i] = -1
+					} else {
+						ei = append(ei, colidxs[i])
+					}
 				}
 			}
-			w.Write([]byte(a.PrettyStringChosenCols(colidxs, n)))
+			if len(ei) == 0 {
+				w.Write([]byte("{error:'key error'}"))
+			} else {
+				w.Write([]byte(a.PrettyStringChosenCols(ei, n)))
+			}
 		} else {
 			w.Write([]byte("{error:'not found'}"))
 		}
