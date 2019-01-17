@@ -62,7 +62,6 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		w.Write([]byte("todo test"))
 	})
 	r.HandleFunc("/"+t.Id+"/list", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		keys := []string{}
 		for key, _ := range t.Data {
 			keys = append(keys, key)
@@ -72,12 +71,10 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		w.Write(j)
 	})
 	r.HandleFunc("/"+t.Id+"/ls", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		j, _ := json.Marshal(uriMap)
 		w.Write(j)
 	})
 	r.HandleFunc("/"+t.Id+"/get/{id}/size", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		params := mux.Vars(r)
 		id := params["id"]
 		a, ok := t.Data[id]
@@ -94,7 +91,6 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		}
 	})
 	r.HandleFunc("/"+t.Id+"/get/{id}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		params := mux.Vars(r)
 		res := params["res"]
 		id := params["id"]
@@ -110,7 +106,6 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		}
 	})
 	r.HandleFunc("/"+t.Id+"/get/{id}/colnames", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		params := mux.Vars(r)
 		id := params["id"]
 		a, ok := t.Data[id]
@@ -122,7 +117,6 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		}
 	})
 	r.HandleFunc("/"+t.Id+"/get/{id}/rownames", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		params := mux.Vars(r)
 		id := params["id"]
 
@@ -135,7 +129,6 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		}
 	})
 	r.HandleFunc("/"+t.Id+"/get/{id}/rows/{rows}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		params := mux.Vars(r)
 		id := params["id"]
 		res := params["res"]
@@ -161,7 +154,6 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		}
 	})
 	r.HandleFunc("/"+t.Id+"/get/{id}/cols/{cols}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		params := mux.Vars(r)
 		id := params["id"]
 		res := params["res"]
@@ -199,7 +191,6 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 	})
 
 	r.HandleFunc("/"+t.Id+"/get/{id}/submat/{rows}/{cols}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
 		params := mux.Vars(r)
 		id := params["id"]
 		res := params["res"]
