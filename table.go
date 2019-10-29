@@ -251,3 +251,5 @@ func (t *Table) PrettyString(f int) string {
 	}
 	return buffer.String()
 }
+
+//TODO Load XLS and GOOGLE SHEET

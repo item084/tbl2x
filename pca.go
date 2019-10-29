@@ -21,7 +21,7 @@ func (t *Table) PCA() *tablePCA {
 	var vecs *mat.Dense
 	var vars []float64
 	if ok {
-		vecs = pc.VectorsTo(vecs)
+		pc.VectorsTo(vecs)
 		vars = pc.VarsTo(vars)
 		return &tablePCA{vars, vecs}
 	} else {
