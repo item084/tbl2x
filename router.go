@@ -11,6 +11,7 @@ import (
 )
 
 type TableRouter struct {
+	Subdir string
 	Id   string
 	Data map[string]*Table
 }
@@ -58,10 +59,10 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 			rowMap[k][v0] = i0
 		}
 	}
-	r.HandleFunc("/"+t.Id, func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("todo test"))
 	})
-	r.HandleFunc("/"+t.Id+"/list", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/list", func(w http.ResponseWriter, r *http.Request) {
 		keys := []string{}
 		for key, _ := range t.Data {
 			keys = append(keys, key)
@@ -70,11 +71,11 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		j, _ := json.Marshal(keys)
 		w.Write(j)
 	})
-	r.HandleFunc("/"+t.Id+"/ls", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/ls", func(w http.ResponseWriter, r *http.Request) {
 		j, _ := json.Marshal(uriMap)
 		w.Write(j)
 	})
-	r.HandleFunc("/"+t.Id+"/get/{id}/size", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/get/{id}/size", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id := params["id"]
 		a, ok := t.Data[id]
@@ -90,7 +91,7 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 			w.Write([]byte("{error:'not found'}"))
 		}
 	})
-	r.HandleFunc("/"+t.Id+"/get/{id}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/get/{id}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		res := params["res"]
 		id := params["id"]
@@ -105,7 +106,7 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 			w.Write([]byte("{error:'not found'}"))
 		}
 	})
-	r.HandleFunc("/"+t.Id+"/get/{id}/colnames", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/get/{id}/colnames", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id := params["id"]
 		a, ok := t.Data[id]
@@ -116,7 +117,7 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 			w.Write([]byte("{error:'not found'}"))
 		}
 	})
-	r.HandleFunc("/"+t.Id+"/get/{id}/rownames", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/get/{id}/rownames", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id := params["id"]
 
@@ -128,7 +129,7 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 			w.Write([]byte("{error:'not found'}"))
 		}
 	})
-	r.HandleFunc("/"+t.Id+"/get/{id}/rows/{rows}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/get/{id}/rows/{rows}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id := params["id"]
 		res := params["res"]
@@ -153,7 +154,7 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 			w.Write([]byte("{error:'not found'}"))
 		}
 	})
-	r.HandleFunc("/"+t.Id+"/get/{id}/cols/{cols}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/get/{id}/cols/{cols}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id := params["id"]
 		res := params["res"]
@@ -190,7 +191,7 @@ func (t *TableRouter) ServeTo(r *mux.Router) {
 		}
 	})
 
-	r.HandleFunc("/"+t.Id+"/get/{id}/submat/{rows}/{cols}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc(t.Subdir + "/"+t.Id+"/get/{id}/submat/{rows}/{cols}/print/{res}", func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id := params["id"]
 		res := params["res"]
